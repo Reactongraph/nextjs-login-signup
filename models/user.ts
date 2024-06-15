@@ -29,7 +29,7 @@ const userSchema: any = new Schema(
     avatar: {
       type: String,
     },
-    emaiVerified: {
+    emailVerified: {
       type: Boolean,
       default: false,
     },

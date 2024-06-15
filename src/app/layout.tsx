@@ -1,4 +1,4 @@
-import * as React from "react";
+import React, { ReactNode, JSX } from "react";
 import type { Viewport } from "next";
 
 import "@/styles/global.css";
@@ -14,10 +14,10 @@ export const viewport = {
 } satisfies Viewport;
 
 interface LayoutProps {
-  children: React.ReactNode;
+  children: ReactNode;
 }
 
-export default function Layout({ children }: LayoutProps): React.JSX.Element {
+export default function Layout({ children }: LayoutProps): JSX.Element {
   return (
     <html lang="en">
       <body>

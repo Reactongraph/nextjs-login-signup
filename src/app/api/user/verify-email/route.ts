@@ -9,11 +9,14 @@ export async function POST(req: NextRequest) {
     const data = await req.json();
     const { token } = data;
 
+    // Verification failed
     if (!token) {
       return NextResponse.json({ status: false }, { status: 200 });
     }
 
     const tokenData: any = await decryptText(token);
+
+    // Verification failed
     if (!tokenData || !tokenData?.id) {
       return NextResponse.json({ status: false }, { status: 200 });
     }
@@ -22,12 +25,14 @@ export async function POST(req: NextRequest) {
       _id: tokenData.id,
     });
 
+    // Verification failed
     if (!hasUser) {
       return NextResponse.json({ status: false }, { status: 200 });
     }
 
-    await User.findByIdAndUpdate(hasUser._id, { emaiVerified: true });
+    await User.findByIdAndUpdate(hasUser._id, { emailVerified: true });
 
+    // Verification success
     return NextResponse.json(
       { status: true, email: hasUser.email },
       { status: 200 }

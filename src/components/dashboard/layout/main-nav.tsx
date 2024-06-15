@@ -1,6 +1,6 @@
 "use client";
 
-import * as React from "react";
+import React, { JSX, useState, Fragment } from "react";
 import Box from "@mui/material/Box";
 import IconButton from "@mui/material/IconButton";
 import Stack from "@mui/material/Stack";
@@ -13,12 +13,12 @@ import { paths } from "@/paths";
 import { Logo } from "@/components/core/logo";
 import { truncateString } from "@/lib/helpers";
 
-export function MainNav(): React.JSX.Element {
+export function MainNav(): JSX.Element {
   const { fullName } = useSelector((store: any) => store.auth);
-  const [openNav, setOpenNav] = React.useState<boolean>(false);
+  const [openNav, setOpenNav] = useState<boolean>(false);
 
   return (
-    <React.Fragment>
+    <Fragment>
       <Box
         component="header"
         sx={{
@@ -58,9 +58,11 @@ export function MainNav(): React.JSX.Element {
                 href={paths.private.dashboard}
                 sx={{ display: "block", width: "fit-content" }}
               >
-                <Logo emblem color="dark"  />
+                <Logo emblem color="dark" />
               </Box>
-              <Typography variant="h6">{truncateString(fullName, 20)}</Typography>
+              <Typography variant="h6">
+                {truncateString(fullName, 20)}
+              </Typography>
             </Grid>
           </Stack>
         </Stack>
@@ -71,6 +73,6 @@ export function MainNav(): React.JSX.Element {
         }}
         open={openNav}
       />
-    </React.Fragment>
+    </Fragment>
   );
 }

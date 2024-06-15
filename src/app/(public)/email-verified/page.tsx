@@ -1,6 +1,6 @@
 import CustomButton from "@/components/common/custom-button";
 import { paths } from "@/paths";
-import { Alert, Grid } from "@mui/material";
+import { Alert } from "@mui/material";
 import Image from "next/image";
 import { redirect } from "next/navigation";
 import React from "react";
@@ -9,6 +9,7 @@ import RouterLink from "next/link";
 import { Metadata } from "next";
 import { config } from "@/config";
 import { verifyEmail } from "@/lib/actions/auth";
+import { CCGrid } from "@/components/styled/styled";
 
 export const metadata = {
   title: `Email verified | ${config.site.name}`,
@@ -30,15 +31,7 @@ const EmailVerified = async ({
   }
 
   return (
-    <Grid
-      sx={{
-        display: "flex",
-        alignItems: "center",
-        justifyContent: "center",
-        flexDirection: "column",
-        height: "100%",
-      }}
-    >
+    <CCGrid>
       <Image
         src="/assets/success.png"
         alt="success image"
@@ -55,7 +48,7 @@ const EmailVerified = async ({
       >
         Login
       </CustomButton>
-    </Grid>
+    </CCGrid>
   );
 };
 

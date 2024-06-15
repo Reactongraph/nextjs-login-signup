@@ -1,4 +1,4 @@
-import * as React from "react";
+import React, { ReactNode, JSX } from "react";
 import Box from "@mui/material/Box";
 import Container from "@mui/material/Container";
 import GlobalStyles from "@mui/material/GlobalStyles";
@@ -7,10 +7,10 @@ import { MainNav } from "@/components/dashboard/layout/main-nav";
 import { SideNav } from "@/components/dashboard/layout/side-nav";
 
 interface LayoutProps {
-  children: React.ReactNode;
+  children: ReactNode;
 }
 
-export default function Layout({ children }: LayoutProps): React.JSX.Element {
+export default function Layout({ children }: LayoutProps): JSX.Element {
   return (
     <>
       <GlobalStyles
@@ -45,9 +45,7 @@ export default function Layout({ children }: LayoutProps): React.JSX.Element {
         >
           <MainNav />
           <main>
-            <Container maxWidth="xl">
-              {children}
-            </Container>
+            <Container maxWidth="xl">{children}</Container>
           </main>
         </Box>
       </Box>

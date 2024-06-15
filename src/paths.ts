@@ -17,5 +17,6 @@ export const paths = {
   common: {
     home: "/",
     tnc: "/tnc",
+    error: "/500-error"
   },
 } as const;

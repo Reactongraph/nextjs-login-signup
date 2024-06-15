@@ -19,7 +19,7 @@ export async function POST(req: NextRequest) {
     const tokenData: any = await decryptText(token);
     if (!tokenData || !tokenData?.id) {
       return NextResponse.json(
-        { status: false, message: "Unauthorised" },
+        { status: false, message: "Unauthorized" },
         { status: 401 }
       );
     }
@@ -40,7 +40,7 @@ export async function POST(req: NextRequest) {
 
     await User.findByIdAndUpdate(user._id, {
       $set: { password: hashedPassword },
-      $unSet: { resetPasswordToken: 1 },
+      $unset: { resetPasswordToken: 1 },
     });
 
     return NextResponse.json(

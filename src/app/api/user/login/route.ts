@@ -9,6 +9,7 @@ export async function POST(req: NextRequest) {
     const data = await req.json();
     const { email, password } = data;
 
+    // Login failed
     if (!email || !password) {
       return NextResponse.json(
         { status: false, message: "Please provide email and password." },
@@ -20,6 +21,7 @@ export async function POST(req: NextRequest) {
       email,
     });
 
+    // Login failed
     if (!user) {
       return NextResponse.json(
         { status: false, message: "Incorrect email or password." },
@@ -27,7 +29,8 @@ export async function POST(req: NextRequest) {
       );
     }
 
-    if (!user.emaiVerified) {
+    // Login failed
+    if (!user.emailVerified) {
       return NextResponse.json(
         { status: false, message: "Please verify your email first." },
         { status: 400 }
@@ -36,6 +39,7 @@ export async function POST(req: NextRequest) {
 
     const isPasswordVerified = await comparePassword(password, user.password);
 
+    // Login failed
     if (!isPasswordVerified) {
       return NextResponse.json(
         { status: false, message: "Incorrect email or password." },
@@ -46,6 +50,7 @@ export async function POST(req: NextRequest) {
     const { _id, fullName, phone, avatar } = user;
     const token = await encryptText({ id: _id });
 
+    // Login Success
     return NextResponse.json(
       {
         status: true,

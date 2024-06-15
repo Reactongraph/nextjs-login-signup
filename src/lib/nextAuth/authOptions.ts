@@ -1,24 +1,23 @@
 import CredentialsProvider from "next-auth/providers/credentials";
 import type { NextAuthOptions } from "next-auth";
-import { login } from "../actions/auth";
+import { paths } from "@/paths";
 
 export const authOptions: NextAuthOptions = {
   pages: {
-    signIn: "/login",
+    signIn: paths.public.signIn,
+    error: paths.common.error,
   },
   secret: process.env.NEXT_PUBLIC_JWT_KEY,
   providers: [
     CredentialsProvider({
       // @ts-ignore
-      authorize: async (credentials: { email: string; password: string }) => {
-        const { email, password } = credentials;
-        let loginResponse: any = await login({ email, password });
-        loginResponse = JSON.parse(loginResponse);
-        if (loginResponse.status) {
-          const { token, data } = loginResponse;
-          return { token, ...data };
+      authorize: async (credentials: { data: any }) => {
+        if (credentials?.data) {
+          return JSON.parse(credentials.data);
         }
-        throw new Error(`Login failed: ${loginResponse.message}`);
+        throw new Error(
+          `Login failed: Some error occurred while creating the session.`
+        );
       },
     }),
   ],

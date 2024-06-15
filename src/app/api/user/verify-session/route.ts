@@ -1,24 +1,27 @@
 import { NextRequest, NextResponse } from "next/server";
 import dbConnect from "~/db/db";
-import { decode } from "next-auth/jwt";
+import { validateSession } from "~/utils/helper";
 
 export async function POST(req: NextRequest) {
   try {
     await dbConnect();
     const data = await req.json();
     const { sessionToken } = data;
-    const tokenData: any = await decode({
-      token: sessionToken,
-      secret: process.env.NEXT_PUBLIC_JWT_KEY || "",
-    });
-
-    if (!tokenData || !tokenData?._id) {
+    const isValid = await validateSession(sessionToken);
+    if (!isValid) {
       return NextResponse.json({ status: false }, { status: 200 });
     }
 
     return NextResponse.json(
       {
         status: true,
+        data: {
+          _id: isValid._id,
+          email: isValid.email,
+          phone: isValid.phone,
+          avatar: isValid.avatar,
+          fullName: isValid.fullName,
+        },
       },
       { status: 200 }
     );

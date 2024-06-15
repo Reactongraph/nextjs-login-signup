@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useEffect } from "react";
+import React, { useEffect,JSX } from "react";
 import {
   Card,
   CardActions,
@@ -14,21 +14,24 @@ import { useForm } from "react-hook-form";
 import { z as zod } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import CustomButton from "@/components/common/custom-button";
-import { PasswordInputField } from "@/components/form/inputFields";
-import { useUpdatePasswordMutation } from "@/store/Features/auth/authApiSlice";
+import { useDispatch, useSelector } from "react-redux";
+import { EmailInputField } from "@/components/form/inputFields";
+import { useUpdateEmailMutation } from "@/store/Features/auth/authApiSlice";
+import { updateData } from "@/store/Features/auth/authSlice";
 import { toast } from "react-toastify";
-import { updatePasswordSchema } from "@/lib/validationSchema";
+import { updateEmailSchema } from "@/lib/validationSchema";
 
-type Values = zod.infer<typeof updatePasswordSchema>;
+type Values = zod.infer<typeof updateEmailSchema>;
 
 const defaultValues = {
-  password: "",
-  newPassword: "",
+  email: "",
 } satisfies Values;
 
-export function UpdatePasswordForm(): React.JSX.Element {
-  const [updatePassword, { data: updateResponse, isLoading }] =
-    useUpdatePasswordMutation<any>();
+export function UpdateEmailForm(): JSX.Element {
+  const { email } = useSelector((store: any) => store.auth);
+  const [updateEmail, { data: updateResponse, isLoading }] =
+    useUpdateEmailMutation<any>();
+  const dispatch = useDispatch();
   const {
     control,
     handleSubmit,
@@ -37,43 +40,41 @@ export function UpdatePasswordForm(): React.JSX.Element {
     watch,
   } = useForm<Values>({
     defaultValues,
-    resolver: zodResolver(updatePasswordSchema),
+    resolver: zodResolver(updateEmailSchema),
   });
 
+  useEffect(() => {
+    if (email) {
+      reset({ email });
+    }
+  }, [email, reset]);
+
   const watcher = watch();
-  const hasChange = watcher.password && watcher.newPassword;
+  const hasChange = watcher.email != email;
 
   const submitHandler = async (data: Values) => {
-    updatePassword(data);
+    updateEmail(data);
   };
 
   useEffect(() => {
     if (updateResponse) {
       toast.success(updateResponse.message);
-      reset({ password: "", newPassword: "" });
+      dispatch(updateData(updateResponse.data));
     }
-  }, [updateResponse, reset]);
+  }, [updateResponse, dispatch]);
 
   return (
     <Card>
       <form onSubmit={handleSubmit(submitHandler)}>
-        <CardHeader subheader="Change Password" title="Password" />
+        <CardHeader subheader="Change Email" title="Email" />
         <Divider />
         <CardContent>
           <Grid container spacing={2}>
             <Grid item xs={12} md={6}>
-              <PasswordInputField
+              <EmailInputField
                 control={control}
-                name="password"
-                label="Current Password"
-                errors={errors}
-              />
-            </Grid>
-            <Grid item xs={12} md={6}>
-              <PasswordInputField
-                control={control}
-                name="newPassword"
-                label="New Password"
+                name="email"
+                label="Email"
                 errors={errors}
               />
             </Grid>

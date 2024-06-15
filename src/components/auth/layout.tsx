@@ -1,4 +1,4 @@
-import * as React from "react";
+import React, { ReactNode, JSX } from "react";
 import RouterLink from "next/link";
 import Box from "@mui/material/Box";
 import Stack from "@mui/material/Stack";
@@ -8,11 +8,11 @@ import { paths } from "@/paths";
 import { DynamicLogo } from "@/components/core/logo";
 
 export interface LayoutProps {
-  children: React.ReactNode;
+  children: ReactNode;
   img?: string;
 }
 
-export function Layout({ children }: LayoutProps): React.JSX.Element {
+export function Layout({ children }: LayoutProps): JSX.Element {
   return (
     <Box
       sx={{

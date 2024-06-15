@@ -1,4 +1,4 @@
-import mongoose, { Mongoose } from 'mongoose';
+import mongoose, { Mongoose } from "mongoose";
 
 declare global {
   var mongoose: {
@@ -7,9 +7,9 @@ declare global {
   };
 }
 
-const MONGODB_URI = process.env.MONGODB_URI || '';
+const MONGODB_URI = process.env.MONGODB_URI || "";
 
-if (!MONGODB_URI) throw new Error('MONGODB_URI not defined');
+if (!MONGODB_URI) throw new Error("MONGODB_URI not defined");
 
 let cached = global.mongoose;
 
@@ -20,12 +20,12 @@ if (!cached) {
 async function dbConnect() {
   if (cached.conn) {
     // eslint-disable-next-line no-console
-    console.log('DB Connected');
+    console.log("DB Connected");
     return cached.conn;
   }
   if (!cached.promise) {
     const opts = {
-      bufferCommands: false
+      bufferCommands: false,
     };
     cached.promise = mongoose.connect(MONGODB_URI, opts).then((mongoose) => {
       return mongoose;
@@ -38,7 +38,7 @@ async function dbConnect() {
     throw e;
   }
   // eslint-disable-next-line no-console
-  console.log('DB Connected');
+  console.log("DB Connected");
   return cached.conn;
 }
 

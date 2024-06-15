@@ -1,13 +1,11 @@
 import { Grid, Typography } from "@mui/material";
-import { useTheme } from "@mui/material/styles";
 import { BeatLoader } from "react-spinners";
 
-const FullscreenLoader = ({title = ""}: {title: string}) => {
-  const theme = useTheme();
+const FullscreenLoader = ({ title = "" }: { title: string }) => {
   return (
     <Grid
       sx={{
-        backgroundColor: "#000000a3",
+        backgroundColor: "white",
         height: "100%",
         position: "absolute",
         top: 0,
@@ -20,14 +18,16 @@ const FullscreenLoader = ({title = ""}: {title: string}) => {
         zIndex: 100000,
       }}
     >
-        <Grid sx={{
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "center",
-        }}>
-        <BeatLoader size={50} color={theme.palette.secondary.main} />
-        </Grid>
-      
+      <Grid
+        sx={{
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "center",
+        }}
+      >
+        <BeatLoader size={50} color="grey" />
+      </Grid>
+
       <Typography variant="h6">{title}</Typography>
     </Grid>
   );

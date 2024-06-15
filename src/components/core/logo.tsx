@@ -1,6 +1,6 @@
 "use client";
 
-import * as React from "react";
+import React, { JSX } from "react";
 import { Box, Typography, Grid } from "@mui/material";
 import { useColorScheme } from "@mui/material/styles";
 
@@ -23,7 +23,7 @@ export function Logo({
   emblem,
   height = HEIGHT,
   width = WIDTH,
-}: LogoProps): React.JSX.Element {
+}: LogoProps): JSX.Element {
   let url: string;
 
   if (emblem) {
@@ -38,7 +38,11 @@ export function Logo({
   return (
     <Grid sx={{ display: "flex", alignItems: "center" }}>
       <Box alt="logo" component="img" height={height} src={url} width={width} />
-      <Typography sx={{ fontSize: 20, fontWeight: "bold", color: "primary.main" }}>Logo</Typography>
+      <Typography
+        sx={{ fontSize: 20, fontWeight: "bold", color: "primary.main" }}
+      >
+        Logo
+      </Typography>
     </Grid>
   );
 }
@@ -57,7 +61,7 @@ export function DynamicLogo({
   height = HEIGHT,
   width = WIDTH,
   ...props
-}: DynamicLogoProps): React.JSX.Element {
+}: DynamicLogoProps): JSX.Element {
   const { colorScheme } = useColorScheme();
   const color = colorScheme === "dark" ? colorDark : colorLight;
 

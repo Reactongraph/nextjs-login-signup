@@ -24,7 +24,7 @@ export default async function RootLayout({
 
   return (
     <>
-      <AddAuthData userData={session} />
+      <AddAuthData userData={verifySessionRes.data} />
       {children}
     </>
   );

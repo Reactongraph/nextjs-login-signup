@@ -1,19 +1,19 @@
-'use client';
+"use client";
 
-import * as React from 'react';
-import useEnhancedEffect from '@mui/utils/useEnhancedEffect';
+import React, { ReactNode, JSX, useState, useEffect, Fragment } from "react";
+import useEnhancedEffect from "@mui/utils/useEnhancedEffect";
 
 export interface NoSsrProps {
-  children?: React.ReactNode;
+  children?: ReactNode;
   defer?: boolean;
-  fallback?: React.ReactNode;
+  fallback?: ReactNode;
 }
 
 // https://github.com/mui/material-ui/blob/master/packages/mui-base/src/NoSsr/NoSsr.tsx
 // without prop-types
-export function NoSsr(props: NoSsrProps): React.JSX.Element {
+export function NoSsr(props: NoSsrProps): JSX.Element {
   const { children, defer = false, fallback = null } = props;
-  const [mountedState, setMountedState] = React.useState(false);
+  const [mountedState, setMountedState] = useState(false);
 
   useEnhancedEffect((): void => {
     if (!defer) {
@@ -21,11 +21,11 @@ export function NoSsr(props: NoSsrProps): React.JSX.Element {
     }
   }, [defer]);
 
-  React.useEffect((): void => {
+  useEffect((): void => {
     if (defer) {
       setMountedState(true);
     }
   }, [defer]);
 
-  return <React.Fragment>{mountedState ? children : fallback}</React.Fragment>;
+  return <Fragment>{mountedState ? children : fallback}</Fragment>;
 }

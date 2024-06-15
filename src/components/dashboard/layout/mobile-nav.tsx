@@ -1,6 +1,6 @@
 "use client";
 
-import * as React from "react";
+import React, { JSX } from "react";
 import Drawer from "@mui/material/Drawer";
 import type { NavItemConfig } from "@/types/nav";
 import SideNavContent from "./side-nav-content";
@@ -11,10 +11,7 @@ export interface MobileNavProps {
   items?: NavItemConfig[];
 }
 
-export function MobileNav({
-  open,
-  onClose,
-}: MobileNavProps): React.JSX.Element {
+export function MobileNav({ open, onClose }: MobileNavProps): JSX.Element {
   return (
     <Drawer
       PaperProps={{

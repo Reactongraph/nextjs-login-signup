@@ -1,6 +1,6 @@
 "use client";
 
-import * as React from "react";
+import React, { JSX, ReactNode } from "react";
 import RouterLink from "next/link";
 import { usePathname } from "next/navigation";
 import Box from "@mui/material/Box";
@@ -19,7 +19,7 @@ import { UserPopover } from "./user-popover";
 import { usePopover } from "@/hooks/use-popover";
 
 const SideNavContent = () => {
-  const { fullName } = useSelector((store: any) => store.auth);
+  const { fullName, avatar } = useSelector((store: any) => store.auth);
   const pathname = usePathname();
   const userPopover = usePopover<HTMLDivElement>();
 
@@ -39,7 +39,7 @@ const SideNavContent = () => {
           href={paths.private.dashboard}
           sx={{ display: "block", width: "fit-content" }}
         >
-          <Logo color="light"  />
+          <Logo color="light" />
         </Box>
       </Grid>
       <Divider sx={{ borderColor: "var(--mui-palette-neutral-700)" }} />
@@ -78,7 +78,12 @@ const SideNavContent = () => {
               },
             }}
           >
-            <Avatar ref={userPopover.anchorRef}>{fullName[0]}</Avatar>
+            <Avatar
+              src={avatar ? avatar : undefined}
+              ref={userPopover.anchorRef}
+            >
+              {fullName[0]}
+            </Avatar>
             <Typography variant="h6">{fullName}</Typography>
           </Grid>
         </Grid>
@@ -100,9 +105,9 @@ function renderNavItems({
 }: {
   items?: NavItemConfig[];
   pathname: string;
-}): React.JSX.Element {
+}): JSX.Element {
   const children = items.reduce(
-    (acc: React.ReactNode[], curr: NavItemConfig): React.ReactNode[] => {
+    (acc: ReactNode[], curr: NavItemConfig): ReactNode[] => {
       const { href, title } = curr;
 
       acc.push(
@@ -138,7 +143,7 @@ function NavItem({
   matcher,
   pathname,
   title,
-}: NavItemProps): React.JSX.Element {
+}: NavItemProps): JSX.Element {
   const active = isNavItemActive({
     disabled,
     external,

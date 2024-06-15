@@ -1,78 +1,125 @@
 "use client";
 
-import * as React from "react";
-import Card from "@mui/material/Card";
-import CardActions from "@mui/material/CardActions";
-import CardContent from "@mui/material/CardContent";
-import CardHeader from "@mui/material/CardHeader";
-import Divider from "@mui/material/Divider";
-import FormControl from "@mui/material/FormControl";
-import InputLabel from "@mui/material/InputLabel";
-import OutlinedInput from "@mui/material/OutlinedInput";
-import Stack from "@mui/material/Stack";
-import { Controller, useForm } from "react-hook-form";
+import React, { useEffect, JSX } from "react";
+import {
+  Card,
+  CardActions,
+  CardContent,
+  CardHeader,
+  Divider,
+  Grid,
+} from "@mui/material";
+
+import { useForm } from "react-hook-form";
 import { z as zod } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { FormHelperText } from "@mui/material";
 import CustomButton from "@/components/common/custom-button";
-import { useSelector } from "react-redux";
-import { useAction } from "@/hooks/use-action";
+import { useDispatch, useSelector } from "react-redux";
+import {
+  TextInputField,
+  PhoneInputField,
+  AvatarInputField,
+} from "@/components/form/inputFields";
+import { useUpdateProfileMutation } from "@/store/Features/auth/authApiSlice";
+import { updateData } from "@/store/Features/auth/authSlice";
+import { toast } from "react-toastify";
+import { updateProfileSchema } from "@/lib/validationSchema";
 
-const schema = zod.object({
-  name: zod.string().min(1, { message: "Required" }),
-});
-
-type Values = zod.infer<typeof schema>;
+type Values = zod.infer<typeof updateProfileSchema>;
 
 const defaultValues = {
-  name: "",
+  fullName: "",
+  phone: "",
+  avatar: "",
 } satisfies Values;
 
-export function UpdateNameForm(): React.JSX.Element {
-  const { name } = useSelector((store: any) => store.auth);
-  const { loading } = useAction();
+export function UpdateNameForm(): JSX.Element {
+  const { fullName, phone, avatar } = useSelector((store: any) => store.auth);
+  const [updateProfile, { data: updateResponse, isLoading }] =
+    useUpdateProfileMutation<any>();
+  const dispatch = useDispatch();
   const {
     control,
     handleSubmit,
     formState: { errors },
     reset,
     watch,
-  } = useForm<Values>({ defaultValues, resolver: zodResolver(schema) });
+    setValue,
+    trigger,
+  } = useForm<Values>({
+    defaultValues,
+    resolver: zodResolver(updateProfileSchema),
+  });
 
-  React.useEffect(() => {
-    reset({ name });
-  }, [name]);
+  useEffect(() => {
+    if (fullName || phone) {
+      reset({ fullName, phone });
+    }
+  }, [fullName, phone, reset]);
+
+  const handleAvatarChange = (file: any) => {
+    setValue("avatar", file);
+    trigger();
+  };
 
   const watcher = watch();
+  const hasChange =
+    watcher.fullName != fullName || watcher.phone != phone || watcher.avatar;
 
-  const submitHandler = async () => {};
+  const submitHandler = async (data: Values) => {
+    const formData = new FormData();
+    formData.append("fullName", data.fullName);
+    formData.append("phone", data.phone);
+    if (data.avatar) {
+      formData.append("avatar", data.avatar);
+    }
+    updateProfile(formData);
+  };
+
+  useEffect(() => {
+    if (updateResponse) {
+      toast.success(updateResponse.message);
+      dispatch(updateData(updateResponse.data));
+    }
+  }, [updateResponse, dispatch]);
+
   return (
     <Card>
       <form onSubmit={handleSubmit(submitHandler)}>
-        <CardHeader subheader="Update name" title="Name" />
+        <CardHeader subheader="General Details" title="General" />
         <Divider />
         <CardContent>
-          <Stack spacing={3} sx={{ maxWidth: "sm" }}>
-            <Controller
-              control={control}
-              name="name"
-              render={({ field }) => (
-                <FormControl error={Boolean(errors.name)}>
-                  <InputLabel>Name</InputLabel>
-                  <OutlinedInput {...field} label="Name" />
-                  {errors.name ? (
-                    <FormHelperText>{errors.name.message}</FormHelperText>
-                  ) : null}
-                </FormControl>
-              )}
-            />
-          </Stack>
+          <Grid container spacing={2}>
+            <Grid item xs={12}>
+              <AvatarInputField
+                name={fullName}
+                originalSrc={avatar}
+                handleChange={handleAvatarChange}
+              />
+            </Grid>
+            <Grid item xs={12} md={6}>
+              <TextInputField
+                control={control}
+                name="fullName"
+                label="Full Name"
+                errors={errors}
+              />
+            </Grid>
+            <Grid item xs={12} md={6}>
+              <PhoneInputField
+                control={control}
+                name="phone"
+                label="Phone Number"
+                errors={errors}
+              />
+            </Grid>
+          </Grid>
         </CardContent>
         <Divider />
         <CardActions sx={{ justifyContent: "flex-end" }}>
           <CustomButton
-            disabled={watcher.name === name || loading}
-            loading={loading}
+            disabled={!hasChange || isLoading}
+            loading={isLoading}
             type="submit"
             variant="contained"
           >

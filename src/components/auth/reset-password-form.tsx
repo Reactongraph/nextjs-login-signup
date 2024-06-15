@@ -1,54 +1,50 @@
 "use client";
 
-import * as React from "react";
+import React, { useEffect } from "react";
 import { zodResolver } from "@hookform/resolvers/zod";
 import Alert from "@mui/material/Alert";
-import FormControl from "@mui/material/FormControl";
-import FormHelperText from "@mui/material/FormHelperText";
-import InputLabel from "@mui/material/InputLabel";
-import OutlinedInput from "@mui/material/OutlinedInput";
 import Stack from "@mui/material/Stack";
 import Typography from "@mui/material/Typography";
-import { Controller, useForm } from "react-hook-form";
+import { useForm } from "react-hook-form";
 import { z as zod } from "zod";
-import { Grid } from "@mui/material";
-import { useAction } from "@/hooks/use-action";
 import CustomButton from "../common/custom-button";
+import { useResetPasswordMutation } from "@/store/Features/auth/authApiSlice";
+import { toast } from "react-toastify";
+import { useRouter } from "next/navigation";
+import { paths } from "@/paths";
+import { PasswordInputField } from "../form/inputFields";
+import { resetPasswordSchema } from "@/lib/validationSchema";
+import { CCGrid } from "../styled/styled";
 
-const schema = zod.object({
-  password: zod
-    .string()
-    .min(6, { message: "Password should be at least 6 characters" }),
-});
-
-type Values = zod.infer<typeof schema>;
+type Values = zod.infer<typeof resetPasswordSchema>;
 
 const defaultValues = { password: "" } satisfies Values;
 
 export function ResetPasswordForm({ token }: { token: string }) {
-  const { loading } = useAction();
+  const [resetPassword, { data, isLoading }] = useResetPasswordMutation<any>();
+  const router = useRouter();
   const {
     control,
     handleSubmit,
     formState: { errors },
-  } = useForm<Values>({ defaultValues, resolver: zodResolver(schema) });
+  } = useForm<Values>({
+    defaultValues,
+    resolver: zodResolver(resetPasswordSchema),
+  });
 
   const onSubmit = async (data: Values) => {
-    if (!data || !token) {
-      // Other code
-    }
+    resetPassword({ ...data, token });
   };
 
+  useEffect(() => {
+    if (data) {
+      toast.success(data.message);
+      router.push(paths.public.signIn);
+    }
+  }, [data, router]);
+
   return (
-    <Grid
-      sx={{
-        display: "flex",
-        alignItems: "center",
-        justifyContent: "center",
-        flexDirection: "column",
-        height: "100%",
-      }}
-    >
+    <CCGrid>
       <Stack width={500} spacing={4}>
         <Typography variant="h5">Change password</Typography>
         <Alert color="warning" severity="warning">
@@ -56,25 +52,18 @@ export function ResetPasswordForm({ token }: { token: string }) {
         </Alert>
         <form onSubmit={handleSubmit(onSubmit)}>
           <Stack spacing={2}>
-            <Controller
+            <PasswordInputField
               control={control}
               name="password"
-              render={({ field }) => (
-                <FormControl error={Boolean(errors.password)}>
-                  <InputLabel>New Password</InputLabel>
-                  <OutlinedInput {...field} label="Password" type="password" />
-                  {errors.password ? (
-                    <FormHelperText>{errors.password.message}</FormHelperText>
-                  ) : null}
-                </FormControl>
-              )}
+              label="New Password"
+              errors={errors}
             />
             {errors.root ? (
               <Alert color="error">{errors.root.message}</Alert>
             ) : null}
             <CustomButton
-              loading={loading}
-              disabled={true}
+              loading={isLoading}
+              disabled={isLoading}
               type="submit"
               variant="contained"
             >
@@ -83,6 +72,6 @@ export function ResetPasswordForm({ token }: { token: string }) {
           </Stack>
         </form>
       </Stack>
-    </Grid>
+    </CCGrid>
   );
 }

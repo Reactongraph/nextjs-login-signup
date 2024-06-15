@@ -1,13 +1,15 @@
 "use client";
 
-import * as React from 'react';
-import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
-import { LocalizationProvider as Provider } from '@mui/x-date-pickers/LocalizationProvider';
+import React, { ReactNode, JSX } from "react";
+import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
+import { LocalizationProvider as Provider } from "@mui/x-date-pickers/LocalizationProvider";
 
 export interface LocalizationProviderProps {
-  children: React.ReactNode;
+  children: ReactNode;
 }
 
-export function LocalizationProvider({ children }: LocalizationProviderProps): React.JSX.Element {
+export function LocalizationProvider({
+  children,
+}: LocalizationProviderProps): JSX.Element {
   return <Provider dateAdapter={AdapterDayjs}>{children}</Provider>;
 }

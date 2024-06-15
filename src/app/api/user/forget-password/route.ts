@@ -17,6 +17,7 @@ export async function POST(req: NextRequest) {
       );
     }
 
+    // Checking email is registered or not
     const user = await User.findOne({ email });
     if (!user) {
       return NextResponse.json(
@@ -27,6 +28,16 @@ export async function POST(req: NextRequest) {
         { status: 400 }
       );
     }
+
+    // Checking email is verified or not
+    if (!user.emailVerified) {
+      return NextResponse.json(
+        { status: false, message: "Please verify your email first." },
+        { status: 400 }
+      );
+    }
+
+    // If "resetPasswordToken" already exists, that means , reset password is already requested before
     if (user.resetPasswordToken) {
       return NextResponse.json(
         {
@@ -39,6 +50,8 @@ export async function POST(req: NextRequest) {
 
     const linkToken = await encryptText({ id: user._id });
     await User.findByIdAndUpdate(user._id, { resetPasswordToken: linkToken });
+
+    // Sending reset password link on mail
     await userResetPasswordLinkMail(user.email, linkToken);
 
     return NextResponse.json(

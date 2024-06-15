@@ -3,12 +3,12 @@ import type { Metadata } from "next";
 import RouterLink from "next/link";
 import Box from "@mui/material/Box";
 import Button from "@mui/material/Button";
-import Stack from "@mui/material/Stack";
 import Typography from "@mui/material/Typography";
 import ArrowBackIcon from "@mui/icons-material/ArrowBack";
 
 import { config } from "@/config";
 import { paths } from "@/paths";
+import { CCBox, CStack } from "@/components/styled/styled";
 
 export const metadata = {
   title: `Not found | ${config.site.name}`,
@@ -16,16 +16,8 @@ export const metadata = {
 
 export default function NotFound(): React.JSX.Element {
   return (
-    <Box
-      component="main"
-      sx={{
-        alignItems: "center",
-        display: "flex",
-        justifyContent: "center",
-        minHeight: "100%",
-      }}
-    >
-      <Stack spacing={3} sx={{ alignItems: "center", maxWidth: "md" }}>
+    <CCBox>
+      <CStack spacing={3} >
         <Box>
           <Box
             component="img"
@@ -58,7 +50,7 @@ export default function NotFound(): React.JSX.Element {
         >
           Go back to home
         </Button>
-      </Stack>
-    </Box>
+      </CStack>
+    </CCBox>
   );
 }
